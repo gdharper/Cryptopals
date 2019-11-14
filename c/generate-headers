@@ -1,0 +1,5 @@
+#! /bin/sh
+
+./scripts/b64lookup-h-gen > b64lookup.h
+./scripts/hexlookup-h-gen > hexlookup.h
+
