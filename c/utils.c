@@ -19,15 +19,13 @@ HexChar_Encode(const uint8_t byte, char* hexHigh, char* hexLow)
 CryptoResult
 HexChar_Decode(const char hexHigh, const char hexLow, uint8_t* byte)
 {
-    RETURN_RESULT_IF(Crypto_Err_InvalidArg, (hexLow < 0 || hexHigh < 0));
+    RETURN_RESULT_IF((hexLow < 0 || hexHigh < 0), Crypto_Err_InvalidArg);
     const uint8_t high = g_Hex[hexHigh];
     const uint8_t low = g_Hex[hexLow];
     
     *byte = NYBS_TO_BYTE(high, low);
-
-    RETURN_RESULT_IF(Crypto_Err_InvalidArg,
-            (low == INVALID_SYMBOL || high == INVALID_SYMBOL));
-
+    RETURN_RESULT_IF((low == INVALID_SYMBOL || high == INVALID_SYMBOL),
+            Crypto_Err_InvalidArg);
     return Crypto_Ok;
 }
 
@@ -46,7 +44,7 @@ CryptoResult Base64_Encode(
     
     const uint32_t req = (byteCount / 3 + ((byteCount % 3) ? 1 : 0)) * 4;
     *required = req;
-    if (bufSize < req) return Crypto_Err_BufferTooSmall;
+    RETURN_RESULT_IF(bufSize < req, Crypto_Err_BufferTooSmall);
 
     uint32_t r, i = 0;
     for (r = byteCount; r > 2; r -= 3)
@@ -63,7 +61,6 @@ CryptoResult Base64_Encode(
 
     if (r == 2)
     {
-
         b64Buf[i] = b64[bytes[byteCount-r] >> 2];
         b64Buf[i+1] = b64[(((bytes[byteCount-r] & 0x03) << 6) >> 2)
                         | (bytes[byteCount-r+1] >> 4)];
@@ -144,36 +141,39 @@ CryptoResult Base64_Decode(
         case 1:
             return Crypto_Err_InvalidArg;
         case 2:
-            if ((b64Bytes[b64Count - r - o]
-                |b64Bytes[1+b64Count - r - o]) & INV_VAL) return Crypto_Err_InvalidArg;
+            RETURN_RESULT_IF(((b64Bytes[b64Count - r - o]
+                             |b64Bytes[1+b64Count - r - o]) & INV_VAL),
+                    Crypto_Err_InvalidArg);
             b[0] = g_B64[b64Bytes[b64Count - r - o]];
             b[1] = g_B64[b64Bytes[1+b64Count - r -o]];
-            if ((b[0]|b[1]) & INV_VAL) return Crypto_Err_InvalidArg;
+            RETURN_RESULT_IF(((b[0]|b[1]) & INV_VAL), Crypto_Err_InvalidArg);
             byteBuf[n] = ((b[0] & 0x3f) << 2) | (b[1] >> 4);
             *required = n + 1;
             return Crypto_Ok;
         case 3:
-            if ((b64Bytes[b64Count - r - o]
-                |b64Bytes[1+b64Count - r - o]
-                |b64Bytes[2+b64Count - r - o]) & INV_VAL) return Crypto_Err_InvalidArg;
+            RETURN_RESULT_IF(((b64Bytes[b64Count - r - o]
+                             |b64Bytes[1+b64Count - r - o]
+                             |b64Bytes[2+b64Count - r - o]) & INV_VAL),
+                    Crypto_Err_InvalidArg);
             b[0] = g_B64[b64Bytes[b64Count - r - o]];
             b[1] = g_B64[b64Bytes[1+b64Count - r - o]];
             b[2] = g_B64[b64Bytes[2+b64Count - r - o]];
-            if ((b[0]|b[1]|b[2]) & INV_VAL) return Crypto_Err_InvalidArg;
+            RETURN_RESULT_IF(((b[0]|b[1]|b[2]) & INV_VAL), Crypto_Err_InvalidArg);
             byteBuf[n+0] = ((b[0] & 0x3f) << 2) | (b[1] >> 4);
             byteBuf[n+1] = ((b[1] & 0x0f) << 4) | (b[2] >> 2);
             *required = n + 2;
             return Crypto_Ok;
         default:
-            if ((b64Bytes[b64Count - r]
-                |b64Bytes[b64Count - r + 1]
-                |b64Bytes[b64Count - r + 2]
-                |b64Bytes[b64Count - r + 3]) & INV_VAL) return Crypto_Err_InvalidArg;
+            RETURN_RESULT_IF(((b64Bytes[b64Count - r - o]
+                              |b64Bytes[b64Count - r + 1]
+                              |b64Bytes[b64Count - r + 2]
+                              |b64Bytes[b64Count - r + 3]) & INV_VAL),
+                    Crypto_Err_InvalidArg);
             b[0] = g_B64[b64Bytes[b64Count - r]];
             b[1] = g_B64[b64Bytes[b64Count - r + 1]];
             b[2] = g_B64[b64Bytes[b64Count - r + 2]];
             b[3] = g_B64[b64Bytes[b64Count - r + 3]];
-            if ((b[0]|b[1]|b[2]|b[3]) & INV_VAL) return Crypto_Err_InvalidArg;
+            RETURN_RESULT_IF(((b[0]|b[1]|b[2]|b[3]) & INV_VAL), Crypto_Err_InvalidArg);
             byteBuf[n+0] = ((b[0] & 0x3f) << 2) | (b[1] >> 4);
             byteBuf[n+1] = ((b[1] & 0x0f) << 4) | (b[2] >> 2);
             byteBuf[n+2] = ((b[2] & 0x03) << 6) | (b[3]);
