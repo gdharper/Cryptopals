@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "utils.h"
+#include "codec.h"
 
 static int Unit_HexChar_Decode()
 {
