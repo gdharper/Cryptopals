@@ -1,5 +1,5 @@
-#ifndef _CRYPTO_UTILS_
-#define _CRYPTO_UTILS_
+#ifndef _CRYPTO_CODEC_
+#define _CRYPTO_CODEC_
 
 #include <stdint.h>
 

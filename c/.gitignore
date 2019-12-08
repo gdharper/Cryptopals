@@ -1,5 +1,4 @@
 a.out
-b64lookup.h
-hexlookup.h
 test.c
 
+_build/*

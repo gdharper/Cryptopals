@@ -2,8 +2,8 @@
 #include <stdbool.h>
 
 #include "b64lookup.h"
+#include "codec.h"
 #include "hexlookup.h"
-#include "utils.h"
 
 
 void
@@ -24,7 +24,7 @@ HexChar_Decode(const char hexHigh, const char hexLow, uint8_t* byte)
     const uint8_t low = g_Hex[hexLow];
     
     *byte = NYBS_TO_BYTE(high, low);
-    RETURN_RESULT_IF((low == INVALID_SYMBOL || high == INVALID_SYMBOL),
+    RETURN_RESULT_IF((low == INV_SYM || high == INV_SYM),
             Crypto_Err_InvalidArg);
     return Crypto_Ok;
 }
