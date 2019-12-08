@@ -1,2 +1,2 @@
 # Cryptopals
-My stumbling attempts at the [Cryptopals Challenges](cryptopals.com)
+My stumbling attempts at the [Cryptopals Challenges](https://cryptopals.com)
