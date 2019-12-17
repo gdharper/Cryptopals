@@ -1,6 +1,7 @@
 #ifndef _CRYPTO_CODEC_
 #define _CRYPTO_CODEC_
 
+#include <stddef.h>
 #include <stdint.h>
 
 #include "errors.h"
@@ -14,18 +15,18 @@ HexChar_Decode(const char hexHigh, const char hexLow, uint8_t* byte);
 CryptoResult
 Base64_Encode(
     const uint8_t* bytes,
-    const uint32_t byteCount,
+    const size_t byteCount,
     uint8_t* b64Buf,
-    const uint32_t bufSize,
-    uint32_t* required);
+    const size_t bufSize,
+    size_t* required);
 
 CryptoResult
 Base64_Decode(
     const uint8_t* b64Bytes,
-    const uint32_t b64Count,
+    const size_t b64Count,
     uint8_t* byteBuf,
-    const uint32_t bufSize,
-    uint32_t* required);
+    const size_t bufSize,
+    size_t* required);
 
 #endif
 
