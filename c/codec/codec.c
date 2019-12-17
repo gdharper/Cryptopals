@@ -34,19 +34,19 @@ HexChar_Decode(const char hexHigh, const char hexLow, uint8_t* byte)
 
 CryptoResult Base64_Encode(
     const uint8_t* bytes,
-    const uint32_t byteCount,
+    const size_t byteCount,
     uint8_t* b64Buf,
-    const uint32_t bufSize,
-    uint32_t* required)
+    const size_t bufSize,
+    size_t* required)
 {
     static const uint8_t b64[] =
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     
-    const uint32_t req = (byteCount / 3 + ((byteCount % 3) ? 1 : 0)) * 4;
+    const size_t req = (byteCount / 3 + ((byteCount % 3) ? 1 : 0)) * 4;
     *required = req;
     RETURN_RESULT_IF(bufSize < req, Crypto_Err_BufferTooSmall);
 
-    uint32_t r, i = 0;
+    size_t r, i = 0;
     for (r = byteCount; r > 2; r -= 3)
     {
         b64Buf[i] = b64[bytes[byteCount-r] >> 2];
@@ -80,12 +80,12 @@ CryptoResult Base64_Encode(
 
 CryptoResult Base64_Decode(
     const uint8_t* b64Bytes,
-    const uint32_t b64Count,
+    const size_t b64Count,
     uint8_t* byteBuf,
-    const uint32_t bufSize,
-    uint32_t* required)
+    const size_t bufSize,
+    size_t* required)
 {
-    const uint32_t req = (b64Count / 4 + ((b64Count % 4) ? 1 : 0)) * 3;
+    const size_t req = (b64Count / 4 + ((b64Count % 4) ? 1 : 0)) * 3;
     if (bufSize < req)
     {
         *required = req;
@@ -93,7 +93,7 @@ CryptoResult Base64_Decode(
     }
 
     uint8_t b[4];
-    uint32_t r = b64Count, n = 0;
+    size_t r = b64Count, n = 0;
     for (r = b64Count; r > 4; r -= 4)
     {
         if ((b64Bytes[b64Count - r]
@@ -121,7 +121,7 @@ CryptoResult Base64_Decode(
         n += 3;
     }
 
-    uint32_t o = 0;
+    size_t o = 0;
     if (r == 4 && b64Bytes[b64Count - r + 3] == PADDING)
     {
         o = (b64Bytes[b64Count - r + 2] == PADDING) ? 2 : 1;

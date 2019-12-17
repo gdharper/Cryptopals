@@ -81,7 +81,7 @@ static int Unit_Base64_Encode()
 {
     const uint8_t padding = '=';
 
-    uint32_t req = 0;
+    size_t req = 0;
     // Test all single bytes
     for (uint8_t i = 0; i < 64; i ++)
     {
@@ -125,7 +125,7 @@ static int Unit_Base64_Decode()
     {
         uint8_t in[4] = {b64[i], b64[i+1], '=', '='};
         uint8_t out[3] = { 0 };
-        uint32_t req;
+        size_t req;
         if (CRYPTO_FAILED(Base64_Decode(in, sizeof(in), out, sizeof(out), &req))
             || strlen(out) != 1) return i;
     }
@@ -134,7 +134,7 @@ static int Unit_Base64_Decode()
     {
         uint8_t in[4] = {b64[i], b64[i+1], b64[i+2], '='};
         uint8_t out[3] = { 0 };
-        uint32_t req;
+        size_t req;
         if (CRYPTO_FAILED(Base64_Decode(in, sizeof(in), out, sizeof(out), &req))
             || strlen(out) != 2) return i + strlen(b64);
     }
@@ -143,7 +143,7 @@ static int Unit_Base64_Decode()
     {
         uint8_t in[4] = {b64[i], b64[i+1], b64[i+2], b64[i+3]};
         uint8_t out[3] = { 0 };
-        uint32_t req;
+        size_t req;
         if (CRYPTO_FAILED(Base64_Decode(in, sizeof(in), out, sizeof(out), &req))
             || strlen(out) != 3) return i + 2*strlen(b64);
     }
@@ -153,7 +153,7 @@ static int Unit_Base64_Decode()
         uint8_t in[11];
         for (int j = 0; j < 11; j++) in[j] = b64[i + j];
         uint8_t out[10] = { 0 };
-        uint32_t req;
+        size_t req;
         if (CRYPTO_FAILED(Base64_Decode(in, sizeof(in), out, sizeof(out), &req))
             || strlen(out) != 9) return i + 3*strlen(b64);
     }
@@ -166,7 +166,7 @@ static int Unit_Base64_Encode_Decode()
     uint8_t in[255];
     for (int i = 0; i < sizeof(in); i++) in[i] = i;
     uint8_t b64[sizeof(in) * 2];
-    uint32_t req;
+    size_t req;
     if (CRYPTO_FAILED(Base64_Encode(in, sizeof(in), b64, sizeof(b64), &req))) return 1;
     uint8_t out[sizeof(in)];
     if (CRYPTO_FAILED(Base64_Decode(b64, req, out, sizeof(out), &req))) return 2;
@@ -177,8 +177,7 @@ static int Unit_Base64_Encode_Decode()
 
 int main(void)
 {
-    int status = 0xffffffff;
-    status = Unit_HexChar_Decode();
+    int status = Unit_HexChar_Decode();
     if (status)
     {
         printf("HexChar_Decode unit test failed: %d\n", status);
@@ -221,11 +220,6 @@ int main(void)
     }
 
 Exit:
-    if (!status)
-    {
-        printf("All tests passed!\n");
-    }
-
     return status;
 }
 
