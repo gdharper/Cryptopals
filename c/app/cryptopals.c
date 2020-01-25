@@ -20,9 +20,9 @@ static bool one_one()
     printf("\n");
     printf("Challenge 1\n");
 
-    size_t inBytes = strlen(in);
+    uint32_t inBytes = strlen(in);
     raw = malloc(inBytes);
-    size_t idx = 0;
+    uint32_t idx = 0;
     for (const char* i = in; *i; i += 2)
     {
         if (CRYPTO_FAILED(HexChar_Decode(*i, *(i+1), &raw[idx])))
@@ -36,7 +36,7 @@ static bool one_one()
     }
 
     out = malloc(inBytes);
-    size_t req = 0;
+    uint32_t req = 0;
     if (CRYPTO_FAILED(Base64_Encode(raw, idx, out, inBytes, &req)))
     {
         printf("Base64 encode failed!\n");
